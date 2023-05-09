@@ -1,4 +1,6 @@
 using Avalonia;
+using Avalonia.Media;
+using AvaloniaInside.Shell.AnimationProviders;
 using AvaloniaInside.Shell.Presenters;
 using Splat;
 
@@ -6,7 +8,7 @@ namespace AvaloniaInside.Shell;
 
 public static class AppBuilderExtensions
 {
-	public static AppBuilder UseShell(this AppBuilder builder) =>
+	public static AppBuilder UseShell(this AppBuilder builder, IAnimationProvider? animationProvider = null) =>
 		builder.AfterPlatformServicesSetup(_ =>
 		{
 			if (Locator.CurrentMutable is null)
@@ -29,5 +31,7 @@ public static class AppBuilderExtensions
 					Locator.Current.GetService<INavigationUpdateStrategy>()!,
 					Locator.Current.GetService<INavigationViewLocator>()!);
 			});
+			Locator.CurrentMutable.Register<IAnimationProvider>(() => 
+				animationProvider ??= new NativeAnimationProvider());
 		});
 }

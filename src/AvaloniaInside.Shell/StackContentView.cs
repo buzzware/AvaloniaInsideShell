@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Splat;
 
 namespace AvaloniaInside.Shell;
 
@@ -17,6 +18,7 @@ public class StackContentView : TemplatedControl
     private IContentControl? _contentPresenter;
     private object? _pendingView;
     private NavigateType? _pendingNavigateType;
+    private IAnimationProvider _animationProvider;
 
     public static readonly StyledProperty<bool> HasContentProperty =
         AvaloniaProperty.Register<Border, bool>(nameof(HasContent));
@@ -27,6 +29,11 @@ public class StackContentView : TemplatedControl
         private set => SetValue(HasContentProperty, value);
     }
 
+    public StackContentView()
+    {
+        _animationProvider = Locator.Current.GetService<IAnimationProvider>()!;
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -34,7 +41,6 @@ public class StackContentView : TemplatedControl
         if (_pendingView == null || _pendingNavigateType == null) return;
         
         UpdateCurrentView(_pendingView, _pendingNavigateType ?? NavigateType.Normal);
-
         _pendingView = null;
         _pendingNavigateType = null;
     }
@@ -76,58 +82,8 @@ public class StackContentView : TemplatedControl
 
     protected virtual void UpdateCurrentView(object? view, NavigateType navigateType)
     {
-        //TODO: Apply specific animation type
         if (_contentPresenter is TransitioningContentControl tcc)
-            switch (navigateType)
-            {
-                case NavigateType.Normal:
-                    tcc.PageTransition = new CompositePageTransition
-                    {
-                        PageTransitions = new List<IPageTransition>
-                        {
-                            new CrossFade { Duration = TimeSpan.FromMilliseconds(125) },
-                            new CustomPageSlide
-                            {
-                                Orientation = CustomPageSlide.SlideAxis.Horizontal,
-                                Direction = CustomPageSlide.SlideDirection.RightToLeft,
-                                Duration = TimeSpan.FromMilliseconds(125)
-                            }
-                        }
-                    };
-                    break;
-                case NavigateType.ReplaceRoot:
-                    tcc.PageTransition = new CrossFade { Duration = TimeSpan.FromMilliseconds(250) };
-                    break;
-                case NavigateType.Modal:
-                    tcc.PageTransition = new CrossFade { Duration = TimeSpan.FromMilliseconds(250) };
-                    break;
-                case NavigateType.Replace:
-                    tcc.PageTransition = new CrossFade { Duration = TimeSpan.FromMilliseconds(250) };
-                    break;
-                case NavigateType.Top:
-                    break;
-                case NavigateType.Clear:
-                    tcc.PageTransition = new CrossFade { Duration = TimeSpan.FromMilliseconds(250) };
-                    break;
-                case NavigateType.Pop:
-                    tcc.PageTransition = new CompositePageTransition
-                    {
-                        PageTransitions = new List<IPageTransition>
-                        {
-                            new CrossFade { Duration = TimeSpan.FromMilliseconds(125) },
-                            new CustomPageSlide
-                            {
-                                Orientation = CustomPageSlide.SlideAxis.Horizontal,
-                                Direction = CustomPageSlide.SlideDirection.LeftToRight,
-                                Duration = TimeSpan.FromMilliseconds(125)
-                            }
-                        }
-                    };
-                    break;
-                case NavigateType.HostedItemChange:
-                    break;
-            }
-
+            tcc.PageTransition = _animationProvider.GetAnimationForNavigationType(navigateType);
         _contentPresenter!.Content = view;
     }
 
