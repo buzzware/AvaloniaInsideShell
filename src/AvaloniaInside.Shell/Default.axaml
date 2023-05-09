@@ -4,7 +4,7 @@
 	<Style Selector="StackContentView">
 		<Setter Property="Template">
 			<ControlTemplate>
-				<TransitioningContentControl Name="PART_ContentPresenter"></TransitioningContentControl>
+				<TransitioningContentControl Name="PART_ContentPresenter" ></TransitioningContentControl>
 			</ControlTemplate>
 		</Setter>
 	</Style>

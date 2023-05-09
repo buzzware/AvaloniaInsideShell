@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 
@@ -75,6 +77,57 @@ public class StackContentView : TemplatedControl
     protected virtual void UpdateCurrentView(object? view, NavigateType navigateType)
     {
         //TODO: Apply specific animation type
+        if (_contentPresenter is TransitioningContentControl tcc)
+            switch (navigateType)
+            {
+                case NavigateType.Normal:
+                    tcc.PageTransition = new CompositePageTransition
+                    {
+                        PageTransitions = new List<IPageTransition>
+                        {
+                            new CrossFade { Duration = TimeSpan.FromMilliseconds(125) },
+                            new CustomPageSlide
+                            {
+                                Orientation = CustomPageSlide.SlideAxis.Horizontal,
+                                Direction = CustomPageSlide.SlideDirection.RightToLeft,
+                                Duration = TimeSpan.FromMilliseconds(125)
+                            }
+                        }
+                    };
+                    break;
+                case NavigateType.ReplaceRoot:
+                    tcc.PageTransition = new CrossFade { Duration = TimeSpan.FromMilliseconds(250) };
+                    break;
+                case NavigateType.Modal:
+                    tcc.PageTransition = new CrossFade { Duration = TimeSpan.FromMilliseconds(250) };
+                    break;
+                case NavigateType.Replace:
+                    tcc.PageTransition = new CrossFade { Duration = TimeSpan.FromMilliseconds(250) };
+                    break;
+                case NavigateType.Top:
+                    break;
+                case NavigateType.Clear:
+                    tcc.PageTransition = new CrossFade { Duration = TimeSpan.FromMilliseconds(250) };
+                    break;
+                case NavigateType.Pop:
+                    tcc.PageTransition = new CompositePageTransition
+                    {
+                        PageTransitions = new List<IPageTransition>
+                        {
+                            new CrossFade { Duration = TimeSpan.FromMilliseconds(125) },
+                            new CustomPageSlide
+                            {
+                                Orientation = CustomPageSlide.SlideAxis.Horizontal,
+                                Direction = CustomPageSlide.SlideDirection.LeftToRight,
+                                Duration = TimeSpan.FromMilliseconds(125)
+                            }
+                        }
+                    };
+                    break;
+                case NavigateType.HostedItemChange:
+                    break;
+            }
+
         _contentPresenter!.Content = view;
     }
 
