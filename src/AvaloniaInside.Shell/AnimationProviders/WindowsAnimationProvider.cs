@@ -15,7 +15,6 @@ public sealed class WindowsAnimationProvider : IAnimationProvider
                 new CrossFade { Duration = TimeSpan.FromMilliseconds(125) },
                 new CustomPageSlide
                 {
-                    Orientation = CustomPageSlide.SlideAxis.Horizontal,
                     Direction = CustomPageSlide.SlideDirection.RightToLeft,
                     Duration = TimeSpan.FromMilliseconds(125)
                 }
@@ -31,7 +30,6 @@ public sealed class WindowsAnimationProvider : IAnimationProvider
                 new CrossFade { Duration = TimeSpan.FromMilliseconds(125) },
                 new CustomPageSlide
                 {
-                    Orientation = CustomPageSlide.SlideAxis.Horizontal,
                     Direction = CustomPageSlide.SlideDirection.LeftToRight,
                     Duration = TimeSpan.FromMilliseconds(125)
                 }

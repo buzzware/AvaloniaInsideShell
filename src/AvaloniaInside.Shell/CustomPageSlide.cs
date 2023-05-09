@@ -16,15 +16,6 @@ namespace AvaloniaInside.Shell;
 /// </summary>
 public class CustomPageSlide : IPageTransition
 {
-    /// <summary>
-    ///     The axis on which the PageSlide should occur
-    /// </summary>
-    public enum SlideAxis
-    {
-        Horizontal,
-        Vertical
-    }
-
     public enum SlideDirection
     {
         LeftToRight,
@@ -42,12 +33,10 @@ public class CustomPageSlide : IPageTransition
     ///     Initializes a new instance of the <see cref="PageSlide" /> class.
     /// </summary>
     /// <param name="duration">The duration of the animation.</param>
-    /// <param name="orientation">The axis on which the animation should occur</param>
-    public CustomPageSlide(TimeSpan duration, SlideAxis orientation = SlideAxis.Horizontal,
-        SlideDirection direction = SlideDirection.RightToLeft)
+    /// <param name="direction"></param>
+    public CustomPageSlide(TimeSpan duration, SlideDirection direction = SlideDirection.RightToLeft)
     {
         Duration = duration;
-        Orientation = orientation;
         Direction = direction;
     }
 
@@ -55,11 +44,6 @@ public class CustomPageSlide : IPageTransition
     ///     Gets the duration of the animation.
     /// </summary>
     public TimeSpan Duration { get; set; }
-
-    /// <summary>
-    ///     Gets the duration of the animation.
-    /// </summary>
-    public SlideAxis Orientation { get; set; }
 
     public SlideDirection Direction { get; set; }
 
@@ -80,10 +64,7 @@ public class CustomPageSlide : IPageTransition
 
         var tasks = new List<Task>();
         var parent = GetVisualParent(from, to);
-        var distance = Orientation == SlideAxis.Horizontal ? parent.Bounds.Width : parent.Bounds.Height;
-        var translateProperty = Orientation == SlideAxis.Horizontal
-            ? TranslateTransform.XProperty
-            : TranslateTransform.YProperty;
+        var distance = parent.Bounds.Width;
 
         if (from != null)
         {
@@ -94,7 +75,7 @@ public class CustomPageSlide : IPageTransition
                 {
                     new KeyFrame
                     {
-                        Setters = { new Setter { Property = translateProperty, Value = 0d } },
+                        Setters = { new Setter { Property = TranslateTransform.XProperty, Value = 0d } },
                         Cue = new Cue(0d)
                     },
                     new KeyFrame
@@ -103,7 +84,7 @@ public class CustomPageSlide : IPageTransition
                         {
                             new Setter
                             {
-                                Property = translateProperty,
+                                Property = TranslateTransform.XProperty,
                                 Value = Direction == SlideDirection.RightToLeft ? -distance : distance
                             }
                         },
@@ -129,7 +110,7 @@ public class CustomPageSlide : IPageTransition
                         {
                             new Setter
                             {
-                                Property = translateProperty,
+                                Property = TranslateTransform.XProperty,
                                 Value = Direction == SlideDirection.RightToLeft ? distance : -distance
                             }
                         },
@@ -137,7 +118,7 @@ public class CustomPageSlide : IPageTransition
                     },
                     new KeyFrame
                     {
-                        Setters = { new Setter { Property = translateProperty, Value = 0d } },
+                        Setters = { new Setter { Property = TranslateTransform.XProperty, Value = 0d } },
                         Cue = new Cue(1d)
                     }
                 },

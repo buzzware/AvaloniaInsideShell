@@ -53,7 +53,7 @@ public class NativeAnimationProvider : IAnimationProvider
             if (OperatingSystem.IsAndroid())
                 return new AndroidAnimationProvider();
             if (OperatingSystem.IsIOS())
-                return new AndroidAnimationProvider();
+                return new IosAnimationProvider();
         }
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
