@@ -87,7 +87,7 @@ Each page that is currently on top of the navigation stack has access to the nav
 
 ```xml
 <UserControl xmlns="https://github.com/avaloniaui"
-             x:Class="ShellExample.Views.ShopViews.ProductCatalogView"
+             x:Class="CivtracSupervisor.Views.ShopViews.ProductCatalogView"
              NavigationBar.Header="Products">
 	<NavigationBar.Item>
 		<Button Content="Filter" Command="{Binding FilterCommand}"></Button>
